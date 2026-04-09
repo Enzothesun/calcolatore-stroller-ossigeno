@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calcolatore Autonomia – Stroller O2 Liquido</title>
+  <style>
+    :root {
+      --bg: #eef2f7;
+      --card: #f7f8fa;
+      --border: #d8dee8;
+      --text: #0f2347;
+      --muted: #6d7b95;
+      --accent: #2f6fec;
+      --shadow: 0 8px 24px rgba(15, 35, 71, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 28px;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 16px 0 6px;
+      text-align: center;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.1;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 24px;
+      font-size: 18px;
+    }
+
+    .panel {
+      background: rgba(255,255,255,0.6);
+      border: 1px solid rgba(216, 222, 232, 0.9);
+      box-shadow: var(--shadow);
+      border-radius: 22px;
+      padding: 18px;
+      backdrop-filter: blur(6px);
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .field {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .label {
+      display: block;
+      font-weight: 700;
+      font-size: 19px;
+      margin-bottom: 12px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: white;
+      font-size: 24px;
+      color: var(--text);
+      outline: none;
+    }
+
+    select:focus, input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(47,111,236,0.12);
+    }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 8px;
+    }
+
+    .result-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 18px;
+      text-align: center;
+      min-height: 126px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .result-title {
+      color: #5c6e8f;
+      font-weight: 700;
+      font-size: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 10px;
+    }
+
+    .result-value {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .result-sub {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .footnote {
+      margin-top: 18px;
+      color: #4f5f7e;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .small {
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    @media (max-width: 780px) {
+      body { padding: 16px; }
+      .controls, .results { grid-template-columns: 1fr; }
+      .label { font-size: 17px; }
+      select, input { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Calcolatore Autonomia – Stroller O₂ Liquido</h1>
+    <div class="subtitle">stima operativa in base al tipo di stroller e al flusso terapia</div>
+
+    <div class="panel">
+      <div class="controls">
+        <div class="field">
+          <label class="label" for="stroller">Tipo stroller</label>
+          <select id="stroller">
+            <option value="600">Piccolo (600 L)</option>
+            <option value="1000">Grande (1000 L)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="label" for="flow">Flusso terapia (L/min)</label>
+          <input id="flow" type="number" min="0.1" step="0.1" value="2" />
+          <div class="hint">Inserisci il flusso prescritto al paziente, per esempio 1,5 oppure 2.</div>
+        </div>
+      </div>
+
+      <div class="results">
+        <div class="result-card">
+          <div class="result-title">Autonomia stimata</div>
+          <div class="result-value" id="durationText">8 h 20 min</div>
+          <div class="result-sub">durata indicativa dello stroller</div>
+        </div>
+
+        <div class="result-card">
+          <div class="result-title">Autonomia (ore)</div>
+          <div class="result-value" id="hoursValue">8,3</div>
+          <div class="result-sub">calcolo: capacità ÷ (flusso × 60)</div>
+        </div>
+      </div>
+
+      <div class="footnote">
+        <strong>Nota operativa:</strong> calcolo informativo basato sui valori condivisi.<br>
+        Formula: <strong>autonomia ore = litri disponibili ÷ (flusso in L/min × 60)</strong>.
+      </div>
+
+      <div class="small">© Calcolatore autonomia stroller – uso informativo</div>
+    </div>
+  </div>
+
+  <script>
+    const stroller = document.getElementById('stroller');
+    const flow = document.getElementById('flow');
+    const durationText = document.getElementById('durationText');
+    const hoursValue = document.getElementById('hoursValue');
+
+    function formatDecimal(num) {
+      return num.toFixed(1).replace('.', ',');
+    }
+
+    function calculate() {
+      const capacity = parseFloat(stroller.value);
+      const lpm = parseFloat(String(flow.value).replace(',', '.'));
+
+      if (!capacity || !lpm || lpm <= 0) {
+        durationText.textContent = '—';
+        hoursValue.textContent = '—';
+        return;
+      }
+
+      const hours = capacity / (lpm * 60);
+      const wholeHours = Math.floor(hours);
+      const minutes = Math.round((hours - wholeHours) * 60);
+
+      let displayHours = wholeHours;
+      let displayMinutes = minutes;
+      if (displayMinutes === 60) {
+        displayHours += 1;
+        displayMinutes = 0;
+      }
+
+      durationText.textContent = `${displayHours} h ${displayMinutes} min`;
+      hoursValue.textContent = formatDecimal(hours);
+    }
+
+    stroller.addEventListener('change', calculate);
+    flow.addEventListener('input', calculate);
+
+    calculate();
+  </script>
+</body>
+</html>
